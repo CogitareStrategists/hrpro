@@ -3,9 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const nav = document.querySelector('.nav-links');
 
   if (toggle && nav) {
-    toggle.addEventListener('click', () => nav.classList.toggle('show'));
+    toggle.addEventListener('click', () => {
+      nav.classList.toggle('show');
+    });
+
     nav.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => nav.classList.remove('show'));
+      link.addEventListener('click', () => {
+        nav.classList.remove('show');
+      });
     });
   }
 
@@ -19,39 +24,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const form = document.getElementById('contactForm');
   const statusBox = document.getElementById('formStatus');
+
   if (form && statusBox) {
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+
       statusBox.className = 'form-status';
       statusBox.textContent = 'Submitting your enquiry...';
 
+      const submitButton = form.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = true;
+      }
+
       const formData = new FormData(form);
       const payload = Object.fromEntries(formData.entries());
+
+      payload.pageUrl = window.location.href;
       payload.submittedAt = new Date().toISOString();
 
       const endpoint = form.dataset.endpoint;
+
       if (!endpoint || endpoint.includes('PASTE_YOUR')) {
         statusBox.classList.add('error');
-        statusBox.textContent = 'Add your Google Apps Script Web App URL in contact.html and assets/js/script.js configuration before going live.';
+        statusBox.textContent = 'Please add your Google Apps Script Web App URL in the form data-endpoint before going live.';
+        if (submitButton) {
+          submitButton.disabled = false;
+        }
         return;
       }
 
       try {
         const response = await fetch(endpoint, {
           method: 'POST',
-          mode: 'cors',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
           body: JSON.stringify(payload)
         });
 
-        if (!response.ok) throw new Error('Network response was not ok');
+        const result = await response.json();
 
-        statusBox.classList.add('success');
-        statusBox.textContent = 'Thank you. Your message has been submitted successfully.';
-        form.reset();
+        if (result.result === 'success') {
+          statusBox.classList.add('success');
+          statusBox.textContent = 'Thank you. Your message has been submitted successfully.';
+          form.reset();
+        } else {
+          throw new Error(result.message || 'Submission failed');
+        }
       } catch (error) {
         statusBox.classList.add('error');
         statusBox.textContent = 'Submission failed. Please try again or contact us directly.';
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+        }
       }
     });
   }
