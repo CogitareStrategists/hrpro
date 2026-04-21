@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const payload = Object.fromEntries(formData.entries());
 
       payload.pageUrl = window.location.href;
+      payload.pageTitle = document.title;
       payload.submittedAt = new Date().toISOString();
 
       const endpoint = form.dataset.endpoint;
