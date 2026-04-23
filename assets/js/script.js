@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (result.result === 'success') {
           statusBox.classList.add('success');
-          statusBox.textContent = 'Thank you. Your message has been submitted successfully.';
+          statusBox.textContent = result.message || 'Thank you. Your message has been submitted successfully.';
           form.reset();
         } else {
           throw new Error(result.message || 'Submission failed');
