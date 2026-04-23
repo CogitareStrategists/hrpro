@@ -376,18 +376,18 @@ footer {
 
 @media (max-width: 980px) {
   .nav-wrap { min-height: 92px; }
-  .site-logo { height: 62px; }
+  .site-logo { height: 82px; }
   .footer-site-logo { height: 62px; }
 }
 
 @media (max-width: 768px) {
   .nav-wrap { min-height: 84px; }
-  .site-logo { height: 56px; }
+  .site-logo { height: 75px; }
   .footer-site-logo { height: 56px; }
 }
 
 @media (max-width: 480px) {
   .nav-wrap { min-height: 78px; }
-  .site-logo { height: 50px; }
+  .site-logo { height: 66px; }
   .footer-site-logo { height: 50px; }
 }
